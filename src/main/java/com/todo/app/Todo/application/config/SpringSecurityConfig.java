@@ -1,10 +1,13 @@
 package com.todo.app.Todo.application.config;
 
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -17,7 +20,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableMethodSecurity
 @Configuration
+@AllArgsConstructor
 public class SpringSecurityConfig {
+
+    private UserDetailsService userDetailsService;
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -42,19 +48,26 @@ public class SpringSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails magaita = User.builder()
-                .username("magaita")
-                .password(passwordEncoder().encode("123456"))
-                .roles("USER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("123456"))
-                .roles("ADMIN")
-                .build();
 
-        return new InMemoryUserDetailsManager(magaita,admin);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)throws Exception{
+       return configuration.getAuthenticationManager();
     }
+
+
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        UserDetails magaita = User.builder()
+//                .username("magaita")
+//                .password(passwordEncoder().encode("123456"))
+//                .roles("USER")
+//                .build();
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder().encode("123456"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(magaita,admin);
+//    }
 }
