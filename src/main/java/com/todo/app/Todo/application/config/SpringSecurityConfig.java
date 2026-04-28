@@ -17,6 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @EnableMethodSecurity
 @Configuration
@@ -31,11 +36,28 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
 
     }
+    // ✅ CORS CONFIGURATION (VERY IMPORTANT)
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http){
 
         http
+                .cors(Customizer.withDefaults()) // ✅ ENABLE CORS HERE
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
@@ -44,6 +66,7 @@ public class SpringSecurityConfig {
 //                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN","USER")
 //                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers( "/api/auth/**").permitAll()
                         .anyRequest()
                         .authenticated())

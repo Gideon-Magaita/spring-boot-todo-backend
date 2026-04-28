@@ -1,5 +1,6 @@
 package com.todo.app.Todo.application.service.impl;
 
+import com.todo.app.Todo.application.dto.LoginDto;
 import com.todo.app.Todo.application.dto.RegisterDto;
 import com.todo.app.Todo.application.entity.Role;
 import com.todo.app.Todo.application.entity.User;
@@ -9,6 +10,10 @@ import com.todo.app.Todo.application.repository.UserRepository;
 import com.todo.app.Todo.application.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +28,8 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    //for login logic
+    private AuthenticationManager authenticationManager;
 
 
     @Override
@@ -51,5 +58,16 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return "User registered successfully!";
+    }
+
+    @Override
+    public String login(LoginDto loginDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(),
+                loginDto.getPassword()
+        ));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "User logged in successfully!";
     }
 }
