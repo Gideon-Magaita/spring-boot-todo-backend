@@ -36,7 +36,7 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
 
     }
-    // ✅ CORS CONFIGURATION (VERY IMPORTANT)
+    // ✅ CORS CONFIGURATION
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
