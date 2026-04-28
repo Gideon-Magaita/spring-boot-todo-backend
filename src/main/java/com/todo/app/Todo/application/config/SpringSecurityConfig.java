@@ -26,12 +26,14 @@ public class SpringSecurityConfig {
     private UserDetailsService userDetailsService;
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder()
+    {
         return new BCryptPasswordEncoder();
+
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity http){
 
         http
                 .csrf(csrf->csrf.disable())
@@ -42,6 +44,7 @@ public class SpringSecurityConfig {
 //                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN","USER")
 //                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers( "/api/auth/**").permitAll()
                         .anyRequest()
                         .authenticated())
                 .httpBasic(Customizer.withDefaults());
@@ -50,7 +53,7 @@ public class SpringSecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
        return configuration.getAuthenticationManager();
     }
 
