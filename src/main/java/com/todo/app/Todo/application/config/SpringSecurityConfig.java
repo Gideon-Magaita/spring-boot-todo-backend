@@ -1,5 +1,7 @@
 package com.todo.app.Todo.application.config;
 
+import com.todo.app.Todo.application.security.JwtAuthenticationEntryPoint;
+import com.todo.app.Todo.application.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +11,11 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.*;
 
 import java.util.List;
@@ -20,6 +24,12 @@ import java.util.List;
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SpringSecurityConfig {
+
+    private UserDetailsService userDetailsService;//no usage
+
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    private JwtAuthenticationFilter authenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,10 +64,12 @@ public class SpringSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()  //MUST BE FIRST
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
-                )
+                ).httpBasic(Customizer.withDefaults());
 
-                .httpBasic(Customizer.withDefaults());
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint));
 
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
