@@ -25,12 +25,8 @@ public class SpringSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-<<<<<<< HEAD
 
     // CORS
-=======
-    // ✅ CORS CONFIGURATION
->>>>>>> 4317b0472adc65483942390a9a6f98df11e743eb
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -46,7 +42,7 @@ public class SpringSecurityConfig {
         return source;
     }
 
-    //SECURITY FILTER CHAIN (IMPORTANT FIX HERE)
+    // SECURITY FILTER CHAIN (IMPORTANT FIX HERE)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
