@@ -8,5 +8,6 @@ public class PasswordEncoderImpl {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         System.out.println(passwordEncoder.encode("magaita"));
         System.out.println(passwordEncoder.encode("admin"));
+        System.out.println(passwordEncoder.encode("123456"));
     }
 }

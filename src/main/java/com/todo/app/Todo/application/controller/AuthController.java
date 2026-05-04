@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @CrossOrigin("*")
 public class AuthController {
+
     private AuthService authService;
 
 
@@ -28,9 +29,7 @@ public class AuthController {
     //Login REST API
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse>login(@RequestBody LoginDto loginDto){
-        String token = authService.login(loginDto);
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
+        JwtAuthResponse jwtAuthResponse = authService.login(loginDto);
         return new ResponseEntity<>(jwtAuthResponse,HttpStatus.OK);
     }
 }
